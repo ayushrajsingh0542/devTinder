@@ -1,1 +1,4 @@
 - created file to set up the backend of devtinder
+- created a new cluster devTinder and connected to it
+- created user schema and user model
+- created /signup api and added data to database
