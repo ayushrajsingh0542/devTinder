@@ -2,3 +2,12 @@
 - created a new cluster devTinder and connected to it
 - created user schema and user model
 - created /signup api and added data to database
+- created patch and deleted api
+- Schema Sanitation
+- Api validation
+- Installed validator and used it for emaild,password,photoUrl
+- Never trust req.body
+- Implemented bcrypt for hashing password and login route
+- Implemented cookie and cookie parser
+- Implemented jwt token
+- created middleware to do auth part

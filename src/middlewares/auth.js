@@ -1,20 +1,35 @@
+const jwt=require('jsonwebtoken');
+const User=require("../models/user.js")
 
+  const userAuth=async(req,res,next)=>{
+    const cookies=req.cookies;
+    //read the token
+    const {token}=cookies;
+    if(!token)
+        throw new Error("Token is not valid")
+    const decodedMsg=await jwt.verify(token,"devTinder@11");
 
-  const auth=(req,res,next)=>{
-    const token="xyz1";
-    if(token==="xyz")
+    const {_id}=decodedMsg;
+    const user=await User.findById({_id});
+    //validate the user
+    if(!user)
     {
-        next();
-    }
-    else
-    {
-        const err=new Error("unauthorised")
+
+        const err=new Error("user not found")
         err.status=404;
         next(err);
+    }
+    //if user exists call next->req handler
+    else
+    { 
+        req.user=user;//attaching this user to req
+        next();
     }
 }
 
 module.exports={
-    auth,
+    userAuth,
 };
+
+
 
