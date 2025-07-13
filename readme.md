@@ -11,3 +11,4 @@
 - Implemented cookie and cookie parser
 - Implemented jwt token
 - created middleware to do auth part
+- refactoring of the code using express.Router()
