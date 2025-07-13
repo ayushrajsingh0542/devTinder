@@ -12,3 +12,8 @@
 - Implemented jwt token
 - created middleware to do auth part
 - refactoring of the code using express.Router()
+- created /profile/view and /profile/edit
+- created requestRoute and also connectionRequest model/schema 
+- created indexes
+- schema.pre for before saving
+
