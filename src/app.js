@@ -14,11 +14,13 @@ app.use(cookieParser());
 
 const authRouter=require("./routes/authRoute.js")
 const profileRouter=require("./routes/profileRoute.js")
-const requestRouter=require("./routes/requestRoute.js")
+const requestRouter=require("./routes/requestRoute.js");
+const userRouter = require('./routes/userRoute.js');
 
 app.use(authRouter);
 app.use(profileRouter);
 app.use(requestRouter);
+app.use(userRouter)
 
 // app.use("/user",(req,res,next)=>{
 //     //route handler

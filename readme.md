@@ -16,4 +16,9 @@
 - created requestRoute and also connectionRequest model/schema 
 - created indexes
 - schema.pre for before saving
+- completed requestRoute
+- created /user/request/received to view received
+- created feed api using sets
+
+
 

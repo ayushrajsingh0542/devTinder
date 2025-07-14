@@ -7,7 +7,7 @@
     {
     const user=await User.findOne({emailId:emailId});
         if(!user)
-            res.status(404).send("Invalid credentials");
+            return res.status(404).send("Invalid credentials");
         const isPasswordValid=await bcrypt.compare(password,user.password);
         if(isPasswordValid)
         {
@@ -23,7 +23,7 @@
             res.send("Login successfull")
         }
         else
-            throw new Error("Invalid credentials");
+             return res.status(404).send("Invalid credentials");
     }
 
 module.exports=LoginAuth;

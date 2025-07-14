@@ -31,7 +31,7 @@ authRouter.post("/signup",async(req,res)=>{
         photoUrl,
     });
     await user.save().then(()=>{
-        res.send("user added successfully")
+        res.json({messgae:"user added successfully"})
     })
     .catch((err)=>{
         res.status(err.status||500).send(err.message||"Something went wrong");
@@ -52,7 +52,7 @@ authRouter.post("/login",async(req,res)=>{
 
 authRouter.post("/logout",async(req,res)=>{
     res.clearCookie("token");
-    res.send("User Logged Out");
+    res.json({message:"User Logged Out"});
 })
 
 
