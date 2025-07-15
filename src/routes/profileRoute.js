@@ -4,14 +4,16 @@ const { validateEditProfileData } = require("../utils/validation.js");
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
 
+
 const profileRouter = express.Router();
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = await req.user; //attached earlier in auth
     console.log(user);
-    res.send("Logged in user found");
+    res.send(user);
   } catch (err) {
+
     res.status(err.status || 500).send(err.message || "Something went wrong");
   }
 });
@@ -24,11 +26,13 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     const user = req.user; //attached by userAuth
     console.log(user);
     Object.keys(req.body).forEach((key) => (user[key] = req.body[key]));
-    console.log(user);
+    
     await user.save();
     const updatedUser = await User.findById(user._id);
+    console.log(updatedUser);
     res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
   } catch (err) {
+    console.log(err)
     res.status(err.status || 500).send(err.message || "Soemthing went wrong");
   }
 });

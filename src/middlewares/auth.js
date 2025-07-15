@@ -6,7 +6,7 @@ const User=require("../models/user.js")
     //read the token
     const {token}=cookies;
     if(!token)
-        throw new Error("Token is not valid")
+        return res.status(401).send("Unauthorised user");
     const decodedMsg=await jwt.verify(token,"devTinder@11");
 
     const {_id}=decodedMsg;

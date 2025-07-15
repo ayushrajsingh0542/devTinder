@@ -11,7 +11,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    }).populate("fromUserId", "firstName lastName age skills about photoUrl"); //we wrote ref:User in connecreq schema of fromUserId..linked
+    }).populate("fromUserId", "firstName lastName age skills about photoUrl gender"); //we wrote ref:User in connecreq schema of fromUserId..linked
     res.json({data:connectionRequest});
   } catch (err) {
     res.status(err.status || 500).send(err.message || "Something went wrong");
@@ -28,8 +28,8 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         { fromUserId: loggedInUser._id, status: "accepted" },
       ],
     })
-      .populate("fromUserId", "firstName lastName age skills about photoUrl")
-      .populate("toUserId", "firstName lastName age skills about photoUrl");
+      .populate("fromUserId", "firstName lastName age skills about photoUrl gender")
+      .populate("toUserId", "firstName lastName age skills about photoUrl gender");
 
     const data = connectionRequests.map((row) => {
       if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
@@ -76,13 +76,13 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         { _id: { $nin: Array.from(hideUserFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    }).select("firstName lastName gender skills about photoUrl").skip(skip).limit(limit) //all users not in connections
+    }).select("firstName lastName gender skills about photoUrl age").skip(skip).limit(limit) //all users not in connections
 
 
     console.log(users);
     console.log(users.length)
 
-    res.json({data:users});
+    res.send(users)
 
   } catch (err) {
     res.status(err.status || 500).send(err.message || "Something went wrong");

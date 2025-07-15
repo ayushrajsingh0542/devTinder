@@ -1,26 +1,49 @@
-const express =require('express');
-const app=express();
-const connectDB =require('./config/database.js')
-const User=require("./models/user.js")
-const bcrypt = require('bcrypt');
-const cookieParser=require('cookie-parser')
-const jwt=require('jsonwebtoken');
-const {userAuth}=require('./middlewares/auth.js')
-const LoginAuth=require('./utils/LoginAuth.js')
+const express = require("express");
+const app = express();
+const connectDB = require("./config/database.js");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-app.use(express.json());//middlware
-app.use(express.urlencoded({extended:true}));
+//  CORS Setup
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+app.options("/profile/edit", cors(corsOptions)); //  handles preflight for all routes
+
+// Middleware
 app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const authRouter=require("./routes/authRoute.js")
-const profileRouter=require("./routes/profileRoute.js")
-const requestRouter=require("./routes/requestRoute.js");
-const userRouter = require('./routes/userRoute.js');
+// Routes
+const authRouter = require("./routes/authRoute.js");
+const profileRouter = require("./routes/profileRoute.js");
+const requestRouter = require("./routes/requestRoute.js");
+const userRouter = require("./routes/userRoute.js");
 
 app.use(authRouter);
 app.use(profileRouter);
 app.use(requestRouter);
-app.use(userRouter)
+app.use(userRouter);
+
+//  Start server after DB connects
+connectDB()
+  .then(() => {
+    console.log(" DB connected successfully");
+    app.listen(3030, () => {
+      console.log(" Server running on http://localhost:3030");
+    });
+  })
+  .catch((err) => {
+    console.error(" DB connection error:", err);
+  });
 
 // app.use("/user",(req,res,next)=>{
 //     //route handler
@@ -56,12 +79,3 @@ app.use(userRouter)
 
 
 
-connectDB().then(()=>{//right way
-console.log("db connected successfully")
-app.listen(3030,()=>{
-    console.log("Succesfully running on 3030")
-})
-
-}).catch((err)=>{
-console.log(err);
-})

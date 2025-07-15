@@ -81,7 +81,9 @@ requestRouter.post("/request/review/:status/:requestId",userAuth,async(req,res)=
 
     connectionRequest.status=status;//changing interested to accepted/rejected
 
+
     const data=await connectionRequest.save()
+    
     
     res.json({message:"Connection request "+status, data})
 
