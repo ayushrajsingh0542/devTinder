@@ -11,9 +11,12 @@ authRouter.post("/signup",async(req,res)=>{
      const {firstName,lastName,emailId,password, age,
         gender,
         skills,
-        photoUrl}=req.body;
+        photoUrl,about}=req.body;
 
      //validation of the data->done in schema only
+     const existingUser=await User.findOne({emailId:emailId});
+             if(existingUser)
+                 return res.status(404).send("User already exists");
 
      //encrypt the password
      
@@ -29,9 +32,11 @@ authRouter.post("/signup",async(req,res)=>{
         gender,
         skills,
         photoUrl,
+        about
     });
     await user.save().then(()=>{
-        res.json({messgae:"user added successfully"})
+        LoginAuth(emailId,password,req,res)
+        // res.json({messgae:"user added successfully"})
     })
     .catch((err)=>{
         res.status(err.status||500).send(err.message||"Something went wrong");

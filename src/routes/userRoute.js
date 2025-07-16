@@ -48,8 +48,8 @@ userRouter.get("/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
     const page=parseInt(req.query.page) || 1;
-    const limit=parseInt(req.query.limit) || 10;
-    const skip=(page-1)*limit;//formula to calc skip
+    //const limit=parseInt(req.query.limit) || 10;
+    //const skip=(page-1)*limit;//formula to calc skip
     //user should see all except
     //1. his own
     //2. his connections
@@ -76,7 +76,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         { _id: { $nin: Array.from(hideUserFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    }).select("firstName lastName gender skills about photoUrl age").skip(skip).limit(limit) //all users not in connections
+    }).select("firstName lastName gender skills about photoUrl age")//.skip(skip).limit(limit) //all users not in connections
 
 
     console.log(users);
