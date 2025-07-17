@@ -37,9 +37,9 @@ app.use(userRouter);
 connectDB()
   .then(() => {
     console.log(" DB connected successfully");
-    app.listen(3030, () => {
-      console.log(" Server running on http://localhost:3030");
-    });
+    app.listen(3030, "0.0.0.0", () => {
+  console.log(" Server running on http://0.0.0.0:3030");
+});
   })
   .catch((err) => {
     console.error(" DB connection error:", err);
