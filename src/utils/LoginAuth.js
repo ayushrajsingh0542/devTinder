@@ -2,6 +2,7 @@
     const bcrypt = require('bcrypt');
     const cookieParser=require('cookie-parser')
     const jwt=require('jsonwebtoken');
+    require('dotenv').config();
     
     async function LoginAuth(emailId,password,req,res)
     {
@@ -14,7 +15,7 @@
 
             //create a jwt
 
-            const token=await jwt.sign({_id:user._id},"devTinder@11",{expiresIn:"7d"});
+            const token=await jwt.sign({_id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"});
             //console.log(token);
 
             //add the token to  cookie and send the response back to the user
