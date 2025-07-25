@@ -34,13 +34,13 @@ const authRouter = require("./routes/authRoute.js");
 const profileRouter = require("./routes/profileRoute.js");
 const requestRouter = require("./routes/requestRoute.js");
 const userRouter = require("./routes/userRoute.js");
-const paymentRouter=require('./routes/paymentRoute')   // ✅ This was missing from use()
+const paymentRouter=require('./routes/paymentRoute.js')   // ✅ This was missing from use()
 
-app.use(authRouter);
-app.use(profileRouter);
-app.use(requestRouter);
-app.use(userRouter);
-app.use(paymentRouter);  // ✅ Ensure this line exists
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+app.use("/", userRouter);
+app.use("/", paymentRouter);
 
 //  Start server after DB connects
 connectDB()
