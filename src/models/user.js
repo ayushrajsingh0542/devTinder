@@ -70,7 +70,14 @@ const userSchema=new mongoose.Schema({
             throw new Error("Skills cannot go beyond 200")
            }
         }
-    }
+    },
+    isPremium:{
+      type:Boolean,
+      default:false,
+    },
+    membershipType:{
+      type:String,
+    },
 
 },{timestamps:true})
 
