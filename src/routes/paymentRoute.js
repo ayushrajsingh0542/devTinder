@@ -72,11 +72,19 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     const paymentDetails = req.body.payload.payment.entity;
 
     const payment = await Payment.findOne({ orderId: paymentDetails.order_id });
+    console.log("🧾 Found Payment:", payment);
+    if (!payment || !payment.userId) {
+  return res.status(404).json({ msg: "Payment or userId not found" });
+}
     payment.status = paymentDetails.status;
     await payment.save();
     console.log("Payment saved");
 
     const user = await User.findOne({ _id: payment.userId });
+    console.log("👤 Found User:", user);
+    if (!user) {
+  return res.status(404).json({ msg: "User not found" });
+}
     user.isPremium = true;
     user.membershipType = payment.notes.membershipType;
     console.log("User saved");
