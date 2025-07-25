@@ -7,7 +7,7 @@ const User=require("../models/user.js")
 const {membershipAmount}=require("../utils/constants.js")
 const {
   validateWebhookSignature,
-} =
+} = require("razorpay/dist/utils/razorpay-utils");
 require('dotenv').config();
 
 paymentRouter.post("/payment/create",userAuth,async(req,res)=>{
