@@ -5,6 +5,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const http=require("http")
+const initializeSocket=require("./utils/Socket.js")
 require('dotenv').config();
 
 
@@ -33,19 +35,25 @@ const authRouter = require("./routes/authRoute.js");
 const profileRouter = require("./routes/profileRoute.js");
 const requestRouter = require("./routes/requestRoute.js");
 const userRouter = require("./routes/userRoute.js");
-const paymentRouter=require('./routes/paymentRoute.js')   // ✅ This was missing from use()
+const paymentRouter=require('./routes/paymentRoute.js')   
+const chatRouter=require("./routes/chatRoute.js")
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
+app.use("/",chatRouter);
+
+const server=http.createServer(app);
+initializeSocket(server);
+
 
 //  Start server after DB connects
 connectDB()
   .then(() => {
     console.log(" DB connected successfully");
-    app.listen(3030, "0.0.0.0", () => {
+    server.listen(3030, "0.0.0.0", () => {
       console.log(" Server running on http://0.0.0.0:3030");
     });
   })
