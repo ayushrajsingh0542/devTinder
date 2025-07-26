@@ -25,7 +25,7 @@ app.options("/profile/edit", cors(corsOptions)); //  handles preflight for all r
 // Middleware
 app.use(cookieParser());
 
-app.use("/api/payment", paymentRouter); 
+app.use("/payment", paymentRouter); 
 
 
 
