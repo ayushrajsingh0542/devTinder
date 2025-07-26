@@ -39,7 +39,7 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
-app.post("/api/payment/webhook", express.raw({ type: "application/json" }));
+
 app.use("/", paymentRouter);
 
 //  Start server after DB connects

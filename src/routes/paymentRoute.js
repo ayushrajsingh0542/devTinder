@@ -1,16 +1,15 @@
 const express = require("express");
+const crypto = require("crypto");
 const { userAuth } = require("../middlewares/auth");
-const paymentRouter = express.Router();
 const razorpayInstance = require("../utils/razorpay");
 const Payment = require("../models/payment");
 const User = require("../models/user");
 const { membershipAmount } = require("../utils/constants");
-const {
-  validateWebhookSignature,
-} = require("razorpay/dist/utils/razorpay-utils");
-require('dotenv').config();
+require("dotenv").config();
 
-// Create order
+const paymentRouter = express.Router(); // ✅ use this consistently
+
+// 📌 1. Create Razorpay order
 paymentRouter.post("/payment/create", userAuth, async (req, res) => {
   try {
     const { membershipType } = req.body;
@@ -24,11 +23,11 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
         firstName,
         lastName,
         emailId,
-        membershipType: membershipType,
+        membershipType,
       },
     });
 
-    console.log(order);
+    console.log("🔹 Razorpay Order Created:", order);
 
     const payment = new Payment({
       userId: req.user._id,
@@ -42,49 +41,56 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 
     const savedPayment = await payment.save();
 
-    res.json({ ...savedPayment.toJSON(), keyId: process.env.RAZORPAY_KEY_ID });
+    res.json({
+      ...savedPayment.toJSON(),
+      keyId: process.env.RAZORPAY_KEY_ID,
+    });
   } catch (err) {
     return res.status(500).json({ msg: err.message });
   }
 });
 
-// ✅ Webhook route (with raw body parser scoped correctly)
+// 📌 2. Razorpay Webhook Route (MUST use raw body)
 paymentRouter.post(
   "/payment/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const signature = req.headers["x-razorpay-signature"];
+    const rawBody = req.body;
+
+    console.log("📩 Webhook Called");
     try {
-      console.log("Webhook Called");
+      const expectedSignature = crypto
+        .createHmac("sha256", secret)
+        .update(rawBody.toString())
+        .digest("hex");
 
-      const webhookSignature = req.get("X-Razorpay-Signature");
-
-      const isWebhookValid = validateWebhookSignature(
-        req.body, // ✅ raw buffer
-        webhookSignature,
-        process.env.RAZORPAY_WEBHOOK_SECRET
-      );
-
-      if (!isWebhookValid) {
+      if (expectedSignature !== signature) {
         console.log("❌ Invalid Webhook Signature");
-        return res.status(400).json({ msg: "Webhook signature is invalid" });
+        return res.status(400).send("Invalid signature");
       }
 
-      console.log("✅ Valid Webhook Signature");
+      const parsed = JSON.parse(rawBody.toString());
 
-      const payload = JSON.parse(req.body.toString("utf8"));
-      const paymentDetails = payload.payload.payment.entity;
+      if (parsed.entity === "order") {
+        const order = parsed;
+        console.log("✅ Valid Webhook Order Data:");
+        console.log("Notes:", order.notes);
+        console.log("Order ID:", order.id);
+        console.log("Status:", order.status);
+        // You can update your DB here if needed
+      }
 
-      console.log("Payment Details from Webhook:", paymentDetails);
-
-      return res.status(200).json({ msg: "Webhook received successfully" });
+      return res.status(200).json({ status: "ok" });
     } catch (err) {
-      console.error("Webhook Error:", err.message);
-      return res.status(500).json({ msg: err.message });
+      console.error("❌ Webhook Handler Error:", err);
+      return res.sendStatus(500);
     }
   }
 );
 
-// Premium verify
+// 📌 3. Premium Verify Route
 paymentRouter.get("/premium/verify", userAuth, async (req, res) => {
   const user = req.user.toJSON();
   return res.json({ ...user });
