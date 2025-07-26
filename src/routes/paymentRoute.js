@@ -10,7 +10,7 @@ require("dotenv").config();
 const paymentRouter = express.Router(); // ✅ use this consistently
 
 // 📌 1. Create Razorpay order
-paymentRouter.post("/create", userAuth, async (req, res) => {
+paymentRouter.post("/payment/create", userAuth, async (req, res) => {
   try {
     const { membershipType } = req.body;
     const { firstName, lastName, emailId } = req.user;
@@ -52,7 +52,7 @@ paymentRouter.post("/create", userAuth, async (req, res) => {
 
 // 📌 2. Razorpay Webhook Route (MUST use raw body)
 paymentRouter.post(
-  "/webhook",
+  "/payment/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;

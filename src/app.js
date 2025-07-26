@@ -1,14 +1,11 @@
 const express = require("express");
-
 const app = express();
-require('dotenv').config();
 const connectDB = require("./config/database.js");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const paymentRouter=require('./routes/paymentRoute.js')
-
+require('dotenv').config();
 
 
 //  CORS Setup
@@ -25,8 +22,6 @@ app.options("/profile/edit", cors(corsOptions)); //  handles preflight for all r
 // Middleware
 app.use(cookieParser());
 
-app.use("/payment", paymentRouter); 
-
 
 
 // Normal body parsing comes AFTER the webhook
@@ -38,7 +33,7 @@ const authRouter = require("./routes/authRoute.js");
 const profileRouter = require("./routes/profileRoute.js");
 const requestRouter = require("./routes/requestRoute.js");
 const userRouter = require("./routes/userRoute.js");
-   // ✅ This was missing from use()
+const paymentRouter=require('./routes/paymentRoute.js')   // ✅ This was missing from use()
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
