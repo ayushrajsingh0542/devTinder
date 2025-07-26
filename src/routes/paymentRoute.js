@@ -52,7 +52,7 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 
 // 📌 2. Razorpay Webhook Route (MUST use raw body)
 paymentRouter.post(
-  "/payment/webhook",
+  "/api/payment/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
