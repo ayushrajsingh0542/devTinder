@@ -50,7 +50,7 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 
 // ✅ Webhook route (with raw body parser scoped correctly)
 paymentRouter.post(
-  "/payment/webhook",
+  "/api/payment/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     try {
@@ -92,4 +92,3 @@ paymentRouter.get("/premium/verify", userAuth, async (req, res) => {
 });
 
 module.exports = paymentRouter;
-  
