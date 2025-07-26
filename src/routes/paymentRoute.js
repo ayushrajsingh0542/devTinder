@@ -50,18 +50,16 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 
 // ✅ Webhook route (with raw body parser scoped correctly)
 paymentRouter.post(
-  "/api/payment/webhook",
+  "/payment/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     try {
       console.log("Webhook Called");
-      const webhookSignature = req.get("X-Razorpay-Signature");
-      console.log("Webhook Signature", webhookSignature);
 
-      const rawBody = req.body.toString("utf8"); // ✅ Razorpay expects raw body string
+      const webhookSignature = req.get("X-Razorpay-Signature");
 
       const isWebhookValid = validateWebhookSignature(
-        rawBody,
+        req.body, // ✅ raw buffer
         webhookSignature,
         process.env.RAZORPAY_WEBHOOK_SECRET
       );
@@ -73,13 +71,14 @@ paymentRouter.post(
 
       console.log("✅ Valid Webhook Signature");
 
-      const event = JSON.parse(rawBody);
-      const paymentDetails = event.payload.payment.entity;
+      const payload = JSON.parse(req.body.toString("utf8"));
+      const paymentDetails = payload.payload.payment.entity;
 
-      // Optional: save/update payment info in DB here
+      console.log("Payment Details from Webhook:", paymentDetails);
 
       return res.status(200).json({ msg: "Webhook received successfully" });
     } catch (err) {
+      console.error("Webhook Error:", err.message);
       return res.status(500).json({ msg: err.message });
     }
   }
