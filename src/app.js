@@ -39,7 +39,7 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
-app.use("/api", paymentRouter);
+app.use("/", paymentRouter);
 
 //  Start server after DB connects
 connectDB()
