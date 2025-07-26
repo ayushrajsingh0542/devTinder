@@ -22,8 +22,7 @@ app.options("/profile/edit", cors(corsOptions)); //  handles preflight for all r
 // Middleware
 app.use(cookieParser());
 
-// ✅ Place webhook raw body parser BEFORE express.json
-app.post("/payment/webhook", express.raw({ type: "application/json" }));
+
 
 // Normal body parsing comes AFTER the webhook
 app.use(express.json());
